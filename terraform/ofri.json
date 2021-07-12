@@ -1,0 +1,303 @@
+{
+    "resource_changes": [
+        {
+            "name": "test-instance_pub", 
+            "mode": "managed", 
+            "address": "aws_instance.test-instance_pub", 
+            "provider_name": "registry.terraform.io/hashicorp/aws", 
+            "type": "aws_instance", 
+            "change": {
+                "after_unknown": {
+                    "ephemeral_block_device": true, 
+                    "primary_network_interface_id": true, 
+                    "availability_zone": true, 
+                    "secondary_private_ips": true, 
+                    "public_dns": true, 
+                    "root_block_device": true, 
+                    "public_ip": true, 
+                    "ebs_block_device": true, 
+                    "instance_state": true, 
+                    "id": true, 
+                    "arn": true, 
+                    "ipv6_address_count": true, 
+                    "subnet_id": true, 
+                    "credit_specification": [], 
+                    "tags_all": true, 
+                    "security_groups": true, 
+                    "placement_group": true, 
+                    "network_interface": [
+                        {
+                            "network_interface_id": true
+                        }
+                    ], 
+                    "cpu_core_count": true, 
+                    "cpu_threads_per_core": true, 
+                    "key_name": true, 
+                    "ipv6_addresses": true, 
+                    "tenancy": true, 
+                    "capacity_reservation_specification": true, 
+                    "host_id": true, 
+                    "metadata_options": true, 
+                    "enclave_options": true, 
+                    "outpost_arn": true, 
+                    "instance_initiated_shutdown_behavior": true, 
+                    "private_dns": true, 
+                    "password_data": true, 
+                    "vpc_security_group_ids": true, 
+                    "private_ip": true
+                }, 
+                "after_sensitive": {
+                    "metadata_options": [], 
+                    "ephemeral_block_device": [], 
+                    "enclave_options": [], 
+                    "secondary_private_ips": [], 
+                    "credit_specification": [], 
+                    "tags_all": {}, 
+                    "root_block_device": [], 
+                    "ipv6_addresses": [], 
+                    "ebs_block_device": [], 
+                    "capacity_reservation_specification": [], 
+                    "vpc_security_group_ids": [], 
+                    "security_groups": [], 
+                    "network_interface": [
+                        {}
+                    ]
+                }, 
+                "after": {
+                    "ami": "ami-00ddb0e5626798373", 
+                    "monitoring": null, 
+                    "volume_tags": null, 
+                    "tags": null, 
+                    "timeouts": null, 
+                    "disable_api_termination": null, 
+                    "get_password_data": false, 
+                    "ebs_optimized": null, 
+                    "iam_instance_profile": null, 
+                    "user_data": null, 
+                    "instance_type": "t2.large", 
+                    "user_data_base64": null, 
+                    "hibernation": null, 
+                    "credit_specification": [], 
+                    "associate_public_ip_address": true, 
+                    "source_dest_check": null, 
+                    "network_interface": [
+                        {
+                            "device_index": 0, 
+                            "delete_on_termination": false
+                        }
+                    ]
+                }, 
+                "actions": [
+                    "create"
+                ], 
+                "before_sensitive": false, 
+                "before": null
+            }
+        }, 
+        {
+            "name": "test_interface_1", 
+            "mode": "managed", 
+            "address": "aws_network_interface.test_interface_1", 
+            "provider_name": "registry.terraform.io/hashicorp/aws", 
+            "type": "aws_network_interface", 
+            "change": {
+                "after_unknown": {
+                    "ipv6_address_count": true, 
+                    "private_ips_count": true, 
+                    "private_dns_name": true, 
+                    "outpost_arn": true, 
+                    "interface_type": true, 
+                    "tags_all": true, 
+                    "private_ips": true, 
+                    "ipv6_addresses": true, 
+                    "attachment": true, 
+                    "mac_address": true, 
+                    "id": true, 
+                    "security_groups": [
+                        false
+                    ], 
+                    "private_ip": true
+                }, 
+                "after_sensitive": {
+                    "ipv6_addresses": [], 
+                    "tags_all": {}, 
+                    "attachment": [], 
+                    "security_groups": [
+                        false
+                    ], 
+                    "private_ips": []
+                }, 
+                "after": {
+                    "subnet_id": "subnet-0068f3bc61736553f", 
+                    "source_dest_check": true, 
+                    "description": null, 
+                    "security_groups": [
+                        "sg-01d2aeaa2fb86873d"
+                    ], 
+                    "tags": null
+                }, 
+                "actions": [
+                    "create"
+                ], 
+                "before_sensitive": false, 
+                "before": null
+            }
+        }
+    ], 
+    "planned_values": {
+        "root_module": {
+            "resources": [
+                {
+                    "name": "test-instance_pub", 
+                    "sensitive_values": {
+                        "metadata_options": [], 
+                        "ephemeral_block_device": [], 
+                        "enclave_options": [], 
+                        "secondary_private_ips": [], 
+                        "credit_specification": [], 
+                        "tags_all": {}, 
+                        "root_block_device": [], 
+                        "ipv6_addresses": [], 
+                        "ebs_block_device": [], 
+                        "capacity_reservation_specification": [], 
+                        "vpc_security_group_ids": [], 
+                        "security_groups": [], 
+                        "network_interface": [
+                            {}
+                        ]
+                    }, 
+                    "schema_version": 1, 
+                    "values": {
+                        "ami": "ami-00ddb0e5626798373", 
+                        "monitoring": null, 
+                        "volume_tags": null, 
+                        "tags": null, 
+                        "timeouts": null, 
+                        "disable_api_termination": null, 
+                        "get_password_data": false, 
+                        "ebs_optimized": null, 
+                        "iam_instance_profile": null, 
+                        "user_data": null, 
+                        "instance_type": "t2.large", 
+                        "user_data_base64": null, 
+                        "hibernation": null, 
+                        "credit_specification": [], 
+                        "associate_public_ip_address": true, 
+                        "source_dest_check": null, 
+                        "network_interface": [
+                            {
+                                "device_index": 0, 
+                                "delete_on_termination": false
+                            }
+                        ]
+                    }, 
+                    "mode": "managed", 
+                    "address": "aws_instance.test-instance_pub", 
+                    "provider_name": "registry.terraform.io/hashicorp/aws", 
+                    "type": "aws_instance"
+                }, 
+                {
+                    "name": "test_interface_1", 
+                    "sensitive_values": {
+                        "ipv6_addresses": [], 
+                        "tags_all": {}, 
+                        "attachment": [], 
+                        "security_groups": [
+                            false
+                        ], 
+                        "private_ips": []
+                    }, 
+                    "schema_version": 0, 
+                    "values": {
+                        "subnet_id": "subnet-0068f3bc61736553f", 
+                        "source_dest_check": true, 
+                        "description": null, 
+                        "security_groups": [
+                            "sg-01d2aeaa2fb86873d"
+                        ], 
+                        "tags": null
+                    }, 
+                    "mode": "managed", 
+                    "address": "aws_network_interface.test_interface_1", 
+                    "provider_name": "registry.terraform.io/hashicorp/aws", 
+                    "type": "aws_network_interface"
+                }
+            ]
+        }
+    }, 
+    "format_version": "0.2", 
+    "terraform_version": "1.0.1", 
+    "configuration": {
+        "root_module": {
+            "resources": [
+                {
+                    "name": "test-instance_pub", 
+                    "schema_version": 1, 
+                    "mode": "managed", 
+                    "address": "aws_instance.test-instance_pub", 
+                    "expressions": {
+                        "ami": {
+                            "constant_value": "ami-00ddb0e5626798373"
+                        }, 
+                        "associate_public_ip_address": {
+                            "constant_value": true
+                        }, 
+                        "network_interface": [
+                            {
+                                "network_interface_id": {
+                                    "references": [
+                                        "aws_network_interface.test_interface_1.id", 
+                                        "aws_network_interface.test_interface_1"
+                                    ]
+                                }, 
+                                "device_index": {
+                                    "constant_value": 0
+                                }
+                            }
+                        ], 
+                        "instance_type": {
+                            "constant_value": "t2.large"
+                        }
+                    }, 
+                    "type": "aws_instance", 
+                    "provider_config_key": "aws"
+                }, 
+                {
+                    "name": "test_interface_1", 
+                    "schema_version": 0, 
+                    "mode": "managed", 
+                    "address": "aws_network_interface.test_interface_1", 
+                    "expressions": {
+                        "subnet_id": {
+                            "constant_value": "subnet-0068f3bc61736553f"
+                        }, 
+                        "security_groups": {
+                            "constant_value": [
+                                "sg-01d2aeaa2fb86873d"
+                            ]
+                        }
+                    }, 
+                    "type": "aws_network_interface", 
+                    "provider_config_key": "aws"
+                }
+            ]
+        }, 
+        "provider_config": {
+            "aws": {
+                "expressions": {
+                    "access_key": {
+                        "constant_value": "AKIATGEO3O4DVHG4BYW4"
+                    }, 
+                    "region": {
+                        "constant_value": "us-east-1"
+                    }, 
+                    "secret_key": {
+                        "constant_value": "eqzO0b7OgVpfJfHQdRVKtGuu3EEmQFDouZGGyfRv"
+                    }
+                }, 
+                "name": "aws"
+            }
+        }
+    }, 
+    "id": 134
+}

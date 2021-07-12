@@ -1,0 +1,404 @@
+# Default values for dan-deployment.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# TODO: proper globals
+# TODO: separate container ports and service ports
+
+autoscaling:
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    resource:
+      averageUtilization: 80
+service:
+  default_type: ClusterIP
+  default_protocol: TCP
+  default_port: 80
+  default_traget_port: 80
+
+hooks:
+  index-lightlytics:
+    imageName: tasks
+    hook: post-install
+    command:
+      - /usr/local/bin/python
+      - main.py
+      - --function
+      - index_lightlytics
+  stop-kafka:
+    imageName: tasks
+    hook: pre-upgrade
+    command:
+      - /usr/local/bin/python
+      - main.py
+      - --function
+      - stop_kafka_listener
+cronjob:
+  scan-all:
+    imageName: tasks
+    schedule: "0 0 * * *"
+    command:
+      - /usr/local/bin/python
+      - main.py
+      - --function
+      - scan_all
+  periodic-scan:
+    imageName: tasks
+    schedule: "*/20 * * * *"
+    command:
+      - /usr/local/bin/python
+      - main.py
+      - --function
+      - periodic_scan
+  cleanup-lightlytics:
+    imageName: tasks
+    schedule: "0 2 * * *"
+    command:
+      - /usr/local/bin/python
+      - main.py
+      - --function
+      - cleanup_mongo
+  backup-mongodb:
+    imageName: tasks
+    schedule: "0 3 * * *"
+    command:
+      - /usr/local/bin/python
+      - main.py
+      - --function
+      - backup_mongodb
+    env:
+      AWS_ROLE_ARN: arn:aws:iam::219342927623:role/lightlyitcs_tasks_role
+      AWS_WEB_IDENTITY_TOKEN_FILE: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+    serviceAccount:
+      serviceAccountName: tasks-mongodb-sa
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::219342927623:role/lightlyitcs_tasks_role
+    volumeMounts:
+      aws-iam-token:
+        mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+
+
+deployment:
+  env:
+    #    todo(zeev): add only
+    Environment: Prod
+    ENV: Prod
+    ARCH: single
+    DOMAIN_NAME: lightops.io
+    LOGLEVEL: INFO
+    SLACK_CLIENT_ID: "903209810486.1615283763813"
+    SLACK_CLIENT_SECRET: "3d654100f5233ad120baf67da771c318"
+    AWS_ACCOUNT: "219342927623"
+    S3_BUCKET_NAME: lightlytics-init-cft
+    KAFKA_BROKERS: "b-1.lightlytics-dev.a0s3fd.c12.kafka.us-east-1.amazonaws.com:9092,b-2.lightlytics-dev.a0s3fd.c12.kafka.us-east-1.amazonaws.com:9092"
+    CUSTOMERS_MS_URL: http://customers
+    S3_MONGO_BACKUPS_BUCKET_NAME: lightlytics-staging-mongo-backups
+    S3_PUBLIC_CFT_BUCKET_NAME: public-lightlytics-cft
+
+  demoEnvVars:
+    #    todo: use k8s service env vars + staging/prod values
+    CLIENT_MONGODB_HOST: mongodb
+    CLIENT_MONGODB_PORT: 27017
+  stagingEnvVars:
+    CLIENT_MONGODB_HOST: mongodb-internal-primary.lightops.io
+    CLIENT_MONGODB_OPTIONS: /?replicaSet=s0&readPreference=secondaryPreferred&retryWrites=false
+    CLIENT_MONGODB_PORT: 27017
+    NEO4J_CLUSTER_DNS: "neo4j-staging-cluster.lightops.io"
+    NEO4J_PORT: 7687
+    NEO4J_DB_NAME: neo4j
+
+  imagepullPolicy: Always
+  buildNumber: latest
+  branchName: master
+  ReplicaCount: 1
+  hpa_enable: "yes"
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 50m
+    limits:
+      memory: 1024Mi
+      cpu: 1000m
+
+external_secrets:
+  access-token-public-key:
+    key: access_token_public_key
+    values:
+      - public_key
+  access-token-private-key:
+    key: access_token_private_key
+    values:
+      - private_key
+  mongo-cred:
+    key: mongo
+    values:
+      - username
+      - password
+  neo4j-cred:
+    key: neo4j
+    values:
+      - username
+      - password
+
+secrets:
+  SECRET_MONGO_PASSWORD:
+    secret_name: mongo-cred
+    secret_key: password
+
+  SECRET_MONGO_USERNAME:
+    secret_name: mongo-cred
+    secret_key: username
+
+  SECRET_NEO4J_PASSWORD:
+    secret_name: neo4j-cred
+    secret_key: password
+
+  SECRET_NEO4J_USERNAME:
+    secret_name: neo4j-cred
+    secret_key: username
+
+lightlytics_ms:
+  customers:
+    service:
+      targetPort: 8500
+    deployment:
+      env:
+        MSName: customers
+        AWS_ROLE_ARN: arn:aws:iam::219342927623:role/ms_customers_role
+        AWS_WEB_IDENTITY_TOKEN_FILE: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+      secrets:
+        SECRET_ACCESS_TOKEN_PRIVATE_KEY:
+          secret_name: access-token-private-key
+          secret_key: private_key
+        SECRET_ACCESS_TOKEN_PUBLIC_KEY:
+          secret_name: access-token-public-key
+          secret_key: public_key
+      volumeMounts:
+        aws-iam-token:
+          mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+    serviceAccount:
+      serviceAccountName: account-manager-customers
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::219342927623:role/ms_customers_role
+  account:
+    service:
+      targetPort: 8000
+    deployment:
+      env:
+        AWS_ROLE_ARN: arn:aws:iam::219342927623:role/lightlytics-sts-role
+        AWS_WEB_IDENTITY_TOKEN_FILE: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+        MSName: account
+      volumeMounts:
+        aws-iam-token:
+          mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+
+    serviceAccount:
+      serviceAccountName: account-manager-sa
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::219342927623:role/lightlytics-sts-role
+  scan:
+    service:
+      targetPort: 3000
+    deployment:
+      hpa_enable: "no"
+      pullPolicy: Always
+      env:
+        MSName: scan
+
+  topology:
+    service:
+      targetPort: 5000
+    deployment:
+      hpa_enable: "no"
+      env:
+        MSName: topology
+      resources:
+        requests:
+          memory: 1024Mi
+          cpu: 1000m
+        limits:
+          memory: 2048Mi
+          cpu: 2000m
+
+  alert:
+    service:
+      targetPort: 7000
+    deployment:
+      env:
+        MSName: alert
+
+  paths:
+    service:
+      targetPort: 6500
+    deployment:
+      env:
+        MSName: paths
+      resources:
+        requests:
+          memory: 2048Mi
+          cpu: 1000m
+        limits:
+          memory: 4096Mi
+          cpu: 2000m
+
+  changes:
+    service:
+      targetPort: 2000
+    deployment:
+      hpa_enable: "no"
+      env:
+        MSName: changes
+        AWS_ROLE_ARN: arn:aws:iam::219342927623:role/lightlytics_sqs_role
+        AWS_WEB_IDENTITY_TOKEN_FILE: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+      volumeMounts:
+        aws-iam-token:
+          mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+      startupProbe:
+        path: /changes/start
+        failureThreshold: 30
+        periodSeconds: 10
+      livenessProbe:
+        path: /changes/status
+        failureThreshold: 5
+        periodSeconds: 60
+    serviceAccount:
+      serviceAccountName: changes-sa
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::219342927623:role/lightlytics_sqs_role
+
+  snapshot:
+    service:
+      targetPort: 4000
+    deployment:
+      env:
+        MSName: snapshot
+      livenessProbe:
+        path: /snapshot/status
+        failureThreshold: 3
+        periodSeconds: 60
+      resources:
+        requests:
+          memory: 2048Mi
+          cpu: 1000m
+        limits:
+          memory: 4096Mi
+          cpu: 2000m
+
+  analyzer:
+    service:
+      targetPort: 6000
+    deployment:
+      hpa_enable: "no"
+      env:
+        MSName: analyzer
+      resources:
+        requests:
+          memory: 2048Mi
+          cpu: 1000m
+        limits:
+          memory: 4096Mi
+          cpu: 2000m
+
+  terraform:
+    service:
+      targetPort: 10000
+    deployment:
+      env:
+        MSName: terraform
+
+  configurationfiles:
+    service:
+      targetPort: 9000
+    deployment:
+      env:
+        MSName: configurationfiles
+
+  # TODO: currently the front-gate is detached from the front-gate, should be moved to ingress
+  # The front-end is sending to this endpoint, aka: <RELEASE>-api.lightops.io
+  front-gate:
+    service:
+      type: ClusterIP
+      targetPort: 1000
+    deployment:
+      hpa_enable: "no"
+      env:
+        MSName: front_gate
+        NODE_ENV: production
+
+  front-end:
+    # TODO: move to CDN (cloudfront)
+    service:
+      type: ClusterIP
+      targetPort: 80
+    deployment:
+      hpa_enable: "no"
+      env:
+        MSName: front_end
+
+  collection-producer:
+    imageName: collection
+    service:
+      type: LoadBalancer
+      ssl_enabled: true
+      targetPort: 4242
+      annotations:
+        external-dns.alpha.kubernetes.io/ttl: "10"
+        external-dns.alpha.kubernetes.io/hostname: -kafka-producer.lightops.io
+        service.beta.kubernetes.io/aws-load-balancer-type: nlb
+        service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+        service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:219342927623:certificate/2b4c20a8-bf47-4ab0-9a7e-dcdbbb61a5e6
+        service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443,8443"
+    deployment:
+      command: "/producer"
+      hpa_enable: "no"
+      env:
+        MSName: collection-producer
+
+  collection-consumer:
+    imageName: collection
+    deployment:
+      command: "/consumer"
+      # hpa = auto scaler
+      hpa_enable: "no"
+      env:
+        MSName: collection-consumer
+
+ingress:
+  urlTypes:
+    - ""
+    - "-ingress"
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=1200
+    #    this is a health check to make sure that the pod is alive in order to include it at the ALB routing level.
+    #    todo:  we need to move this to the service level, maybe consider different health for this role.
+    alb.ingress.kubernetes.io/healthcheck-path: /healthcheck
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '300'
+
+
+mongodb:
+  mongodbUsername: admin
+  mongodbDatabase: lightlytics
+  service:
+    name: mongodb
+  enabled: false
+
+neo4j:
+  core:
+    service:
+      name: neo4j
+    standalone: true
+  acceptLicenseAgreement: "yes"
+  enabled: false
+
+
+
+
+
+
+    
+
+

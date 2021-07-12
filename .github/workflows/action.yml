@@ -1,0 +1,22 @@
+name: 'Hello World'
+description: 'Greet someone and record the time'
+inputs:
+  Path_plan:  # id of input
+    description: 'path to tr plan file'
+    required: true
+    default: './terraform/plan.json'
+  Path_metadata:
+    description: 'path to metadata file'
+    required: true
+    default: './terraform/metadata.json'
+outputs:
+  Path_plan: # id of output
+    description: 'The time we greeted you'
+  Path_metadata: # id of output
+    description: 'The time we greeted you'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.Path_plan }}
+    - ${{ inputs.Path_metadata }}

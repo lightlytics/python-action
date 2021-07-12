@@ -1,0 +1,11 @@
+[neo4j]
+10.0.200.187
+10.0.201.154
+10.0.201.88
+10.0.200.84
+10.0.201.215
+
+[neo4j:vars]
+ansible_ssh_user=ubuntu
+ansible_ssh_private_key_file=~/Lightlytics.pem
+ansible_ssh_common_args= -o ProxyCommand="ssh -q ec2-user@52.21.190.71 -i ~/Lightlytics.pem -W %h:%p"

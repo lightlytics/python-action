@@ -1,0 +1,12 @@
+---
+host1: 10.0.200.195
+host2: 10.0.201.229
+host3: 10.0.200.117
+portHosts: 27017
+userName: datadog
+password: DDog456!!
+authSource: admin
+replica_bool: true
+logPath: /log/mongod.log
+apiKey: d66c72c00c531fd52c1ebbdd7d9b9ed0
+logsBool: true

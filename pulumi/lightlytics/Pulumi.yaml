@@ -1,0 +1,12 @@
+# https://www.pulumi.com/docs/intro/concepts/project/
+name: lightlytics
+runtime:
+  name: python
+description: Lightlytics Prod AWS Environment
+
+# Notes:
+# When your Pulumi program references resources in the local filesystem, they are always relative to the working directory.
+
+# Stack Settings Files
+# Each stack that is created in a project will have a file named Pulumi.<stackname>.yaml which contains the configuration specific to this stack.
+# For example: Pulumi.prod.yaml

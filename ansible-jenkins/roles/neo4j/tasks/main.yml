@@ -1,0 +1,3 @@
+---
+- name: deploy neo4j plugin
+  include_tasks: neo4j.yml

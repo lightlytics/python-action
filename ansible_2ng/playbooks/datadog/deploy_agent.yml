@@ -1,0 +1,5 @@
+---
+ - hosts: mongodb
+   roles:
+     - roles/datadog_agent
+   become: yes

@@ -1,0 +1,26 @@
+config:
+  aws:profile: prod
+  aws:region: us-east-1
+  lightlytics-environments:EksClusterConf:
+    EksClusterInstanceTypes:
+    - c5.large
+  lightlytics-environments:PrivateSubnetNetworkCount: "127"
+  lightlytics-environments:PrivateSubnetNetworkStart: "0"
+  lightlytics-environments:PublicSubnetNetworkCount: "128"
+  lightlytics-environments:PublicSubnetNetworkStart: "127"
+  lightlytics-environments:VpcBlock-eu-west-1: 10.4.0.0/16
+  lightlytics-environments:VpcBlock-us-east-1: 10.0.0.0/16
+  lightlytics-environments:VpcBlock-us-east-2: 10.1.0.0/16
+  lightlytics-environments:VpcBlock-us-west-1: 10.2.0.0/16
+  lightlytics-environments:VpcBlock-us-west-2: 10.3.0.0/16
+  lightlytics-environments:domainWildCard: '*.lightlytics.com'
+  lightlytics-environments:externalRegions: []
+  lightlytics-environments:lightlyticsSupportPassword:
+    secure: AAABAP2tagnClmm9N40+xHjd/kpiRG8wzmmKXB3wWX1IpOlsJGQSqajAOtJ+6EGrbAC4I/jmPhdx0F9qwBlhKA==
+  lightlytics-environments:mongoDbPassword:
+    secure: AAABAMhEtFBDZsXRfJnHgxBESjnSYMBXmpGIbGXSXRhh9qS+h3GFEwmlRHFDHOyhAlDdA63/Io/r+0IBnG1Auw==
+  lightlytics-environments:neo4jPassword:
+    secure: AAABAGOa8XJdTgDRp60+ColM//3z9saA2QNKNY96jNAq6AHe3EWNe0+SQC41A38d1skTkK2EYyY60n+Y4/SkLg==
+  lightlytics-environments:primaryRegion: us-east-1
+  lightlytics-environments:fullDeploymnet: True
+

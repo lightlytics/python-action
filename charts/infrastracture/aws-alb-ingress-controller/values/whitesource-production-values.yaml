@@ -1,0 +1,11 @@
+awsRegion: us-east-1
+clusterName: whitesource-eks_cluster
+awsVpcID: vpc-0de963568f85e4f72
+rbac:
+  create: true
+  serviceAccount:
+    create: true
+    name: alb-ingress-controller-sa
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::624907860825:role/whitesource-alb_ingress_controller_role
+

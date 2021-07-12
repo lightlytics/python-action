@@ -1,0 +1,11 @@
+domainFilters:
+- lightops.io
+provider: aws
+# POLICY SYNC MEANS THAT EXTERNAL DNS WILL AUTO DELETE UNUSED RECORDS!
+policy: sync
+aws:
+  zoneType: public
+txtOwnerId: Z02219341U89YM65K8R5R
+logLevel: info
+rbac:
+  create: true

@@ -1,0 +1,5 @@
+---
+- hosts: neo4j
+  roles:
+    - roles/neo4j
+  become: yes

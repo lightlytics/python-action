@@ -1,0 +1,240 @@
+{{/* TODO: This ingress is used only for tests - should be moved to full service support */}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "lightlytics-ingress"
+  annotations:
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    external-dns.alpha.kubernetes.io/hostname: >-
+      {{- $length := len $.Values.ingress.urlTypes -}}
+      {{- range $index, $value := .Values.ingress.urlTypes }}
+      {{ $.Release.Name }}{{ $value }}.{{ $.Values.deployment.env.DOMAIN_NAME }}
+      {{- if ne $index (sub $length 1) -}},{{- end -}}
+    {{- end }}
+    {{- /*   https://cert-manager.io/docs/usage/ingress/   */}}
+    external-dns.alpha.kubernetes.io/ttl: "10"
+    {{- /* https://docs.cert-manager.io/en/release-0.7/tasks/issuing-certificates/ingress-shim.html   */}}
+    cert-manager.io/cluster-issuer: letsencrypt-issuer-dev
+    cert-manager.io/acme-challenge-type: "dns01"
+    {{- /*  if the ACME challenge type has been set to dns01, this annotation must be specified to instruct cert-manager which DNS provider (as configured on the specified Issuer resource) should be used. This field is required if the challenge type is set to DNS01.  */}}
+    cert-manager.io/acme-dns01-provider: "route53"
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    {{- if (contains "staging" .Values.deployment.env.ENV) }}
+    alb.ingress.kubernetes.io/wafv2-acl-arn: arn:aws:wafv2:us-east-1:219342927623:regional/webacl/lightlytics-staging-waf/aa9742c3-9631-4c3f-a381-775470435c9a
+    {{- end }}
+  labels:
+    app: lightlytics-ingress
+spec:
+{{- /* NOTE: WE USE AUTO CERT DISCOVERY WITH ACM - https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/cert_discovery/ */}}
+  tls:
+    - hosts:
+        - {{ .Release.Name }}.{{ .Values.deployment.env.DOMAIN_NAME }}
+{{- /*   uncomment this to use with cert manager   secretName: letsencrypt-certs-{{ .Release.Name }}*/}}
+  rules:
+    - host: {{ .Release.Name }}.{{ .Values.deployment.env.DOMAIN_NAME }}
+      http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: ssl-redirect
+              servicePort: use-annotation
+          - path: /graphql
+            backend:
+              serviceName: "front-gate"
+              servicePort: {{ index .Values.lightlytics_ms "front-gate" "service" "port"  | default $.Values.service.default_port }}
+{{/*    This endpoint will be removed after deploy of v1/collection/...          */}}
+          - path: /api/v1/flowlog/*
+            backend:
+              serviceName: "collection-producer"
+              servicePort: {{ index .Values.lightlytics_ms "collection-producer" "service" "port"  | default $.Values.service.default_port }}
+          - path: /api/v1/collection/*
+            backend:
+              serviceName: "collection-producer"
+              servicePort: {{ index .Values.lightlytics_ms "collection-producer" "service" "port"  | default $.Values.service.default_port }}
+          - path: /*
+            backend:
+              serviceName: "front-end"
+              servicePort: {{ $.Values.service.default_port }}
+    {{- /* These -ingress values are here only for our testing, DO NOT OPEN THEM IN PROD!! */ -}}
+    {{- if not (contains "prod" .Values.deployment.env.ENV) }}
+    - host: {{ .Release.Name }}-ingress.{{ .Values.deployment.env.DOMAIN_NAME }}
+      http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: ssl-redirect
+              servicePort: use-annotation
+
+          - path: /scan/*
+            backend:
+              serviceName: "scan"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.scan.service.port }}
+
+          - path: /scan
+            backend:
+              serviceName: "scan"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.scan.service.port }}
+
+          - path: /scan_aws
+            backend:
+              serviceName: "scan"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.scan.service.port }}
+
+          - path: /scan-aws-policies
+            backend:
+              serviceName: "scan"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.scan.service.port }}
+
+          - path: /topology/*
+            backend:
+              serviceName: "topology"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.topology.service.port }}
+
+          - path: /reset-graphdb
+            backend:
+              serviceName: "topology"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.topology.service.port }}
+
+          - path: /snapshot/*
+            backend:
+              serviceName: "snapshot"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.snapshot.service.port }}
+
+          - path: /reverse_proxy_map/*
+            backend:
+              serviceName: "snapshot"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.snapshot.service.port }}
+
+          - path: /inventory/*
+            backend:
+              serviceName: "snapshot"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.snapshot.service.port }}
+
+          - path: /analyzer/*
+            backend:
+              serviceName: "analyzer"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.analyzer.service.port }}
+
+          - path: /analyze
+            backend:
+              serviceName: "analyzer"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.analyzer.service.port }}
+
+          - path: /broken_path_info
+            backend:
+              serviceName: "analyzer"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.analyzer.service.port }}
+
+          - path: /crossing-paths
+            backend:
+              serviceName: "analyzer"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.analyzer.service.port }}
+
+          - path: /analyze/*
+            backend:
+              serviceName: "analyzer"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.analyzer.service.port }}
+
+          - path: /terraform/*
+            backend:
+              serviceName: "terraform"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.terraform.service.port }}
+
+          - path: /accounts
+            backend:
+              serviceName: "account"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.account.service.port }}
+
+          - path: /customers/*
+            backend:
+              serviceName: "customers"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.customers.service.port }}
+
+          - path: /customers
+            backend:
+              serviceName: "customers"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.customers.service.port }}
+
+          - path: /customer_index
+            backend:
+              serviceName: "customers"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.customers.service.port }}
+
+          - path: /tokens/*
+            backend:
+              serviceName: "customers"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.customers.service.port }}
+
+          - path: /tokens
+            backend:
+              serviceName: "customers"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.customers.service.port }}
+
+          - path: /login
+            backend:
+              serviceName: "customers"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.customers.service.port }}
+
+          - path: /users
+            backend:
+              serviceName: "customers"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.customers.service.port }}
+
+          - path: /users/*
+            backend:
+              serviceName: "customers"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.customers.service.port }}
+
+          - path: /permissions
+            backend:
+              serviceName: "customers"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.customers.service.port }}
+
+          - path: /permissions/*
+            backend:
+              serviceName: "customers"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.customers.service.port }}
+
+          - path: /accounts/*
+            backend:
+              serviceName: "account"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.account.service.port }}
+
+          - path: /configuration_files/*
+            backend:
+              serviceName: "configurationfiles"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.configurationfiles.service.port }}
+
+          - path: /regions
+            backend:
+              serviceName: "account"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.account.service.port }}
+
+          - path: /path
+            backend:
+              serviceName: "analyzer"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.analyzer.service.port }}
+
+          - path: /flowlogs-connections
+            backend:
+              serviceName: "analyzer"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.analyzer.service.port }}
+
+          - path: /graph
+            backend:
+              serviceName: "analyzer"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.analyzer.service.port }}
+
+          - path: /graph/create
+            backend:
+              serviceName: "analyzer"
+              servicePort: {{ default $.Values.service.default_port .Values.lightlytics_ms.analyzer.service.port }}
+
+          - path: /graphql
+            backend:
+              serviceName: "front-gate"
+              servicePort: {{ $.Values.service.default_port }}
+  {{- end }}

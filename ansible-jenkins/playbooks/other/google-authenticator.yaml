@@ -1,0 +1,113 @@
+- name: handle
+  hosts: bastion
+
+  tasks:
+    - name: Set a hostname
+      hostname:
+        name: "{{ bastion_hostname }}"
+      become: yes
+      become_user: root
+
+    - name: Copy pem file
+      copy:
+        src: ~/prod-keys/{{ pem_file_name }}
+        dest: /home/ec2-user/{{ pem_file_name }}
+        owner: ec2-user
+        mode: '0700'
+      become: yes
+      become_user: root
+
+
+    - name: Install EPEL rpm from a remote repo
+      yum:
+        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        state: present
+      become: yes
+      become_user: root
+
+    - name: Install google-authenticator
+      yum:
+        name: google-authenticator
+        state: present
+      become: yes
+      become_user: root
+
+    - name: Copy pam.d/sshd file with owner and permissions
+      copy:
+        src: ./payloads/bastion/etc/pam.d/sshd
+        dest: /etc/pam.d/sshd
+        owner: root
+        group: root
+        mode: '0644'
+      become: yes
+      become_user: root
+
+    - name: Copy /etc/ssh/sshd_config file with owner and permissions
+      copy:
+        src: ./payloads/bastion/etc/ssh/sshd_config
+        dest: /etc/ssh/sshd_config
+        owner: root
+        group: root
+        mode: '0644'
+      become: yes
+      become_user: root
+
+    - name: Creates skel/.ssh directory
+      file:
+        path: /etc/skel/.ssh
+        state: directory
+      become: yes
+      become_user: root
+
+    - name: Copy ec2-user authorized_keys to golbal
+      copy:
+        src: /home/ec2-user/.ssh/authorized_keys
+        dest: /etc/skel/.ssh/authorized_keys
+        remote_src: yes
+      become: yes
+      become_user: root
+
+    - name: Copy profile.d/mfa.sh file with owner and permissions
+      copy:
+        src: ./payloads/bastion/etc/profile.d/mfa.sh
+        dest: /etc/profile.d/mfa.sh
+        owner: root
+        group: root
+        mode: '0644'
+      become: yes
+      become_user: root
+
+    - name: Copy /etc/amazon/amazon-cloudwatch-agent/amazon-cloudwatch-agent.json file with owner and permissions
+      copy:
+        src: ./payloads/bastion/etc/amazon/amazon-cloudwatch-agent/amazon-cloudwatch-agent.json
+        dest: /etc/amazon/amazon-cloudwatch-agent/amazon-cloudwatch-agent.json
+        owner: root
+        group: root
+        mode: '0644'
+      become: yes
+      become_user: root
+
+    - name: Restart amazon-cloudwatch-agent service
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: amazon-cloudwatch-agent
+      become: yes
+      become_user: root
+
+    - name: Restart sshd service
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: sshd
+      become: yes
+      become_user: root
+
+
+
+
+
+
+
+
+

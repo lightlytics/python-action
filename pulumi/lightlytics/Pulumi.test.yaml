@@ -1,0 +1,8 @@
+config:
+  aws:profile: prod
+  aws:region: us-east-1
+  lightlytics:PrivateSubnetNetworkCount: "127"
+  lightlytics:PrivateSubnetNetworkStart: "0"
+  lightlytics:PublicSubnetNetworkCount: "128"
+  lightlytics:PublicSubnetNetworkStart: "127"
+  lightlytics:VpcBlock: 10.0.0.0/16

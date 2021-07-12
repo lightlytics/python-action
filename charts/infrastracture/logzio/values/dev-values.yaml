@@ -1,0 +1,5 @@
+configType: auto-custom
+secrets:
+  logzioShippingToken: qOlTYEiRAyCVLwJRcyDLJbsypsTvUCpS
+  clusterName: LightLyticsMain
+  logzioRegion:  'us'

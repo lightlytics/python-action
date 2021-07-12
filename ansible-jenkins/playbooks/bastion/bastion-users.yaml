@@ -1,0 +1,42 @@
+- name: handle
+  hosts: bastion
+  become: yes
+  become_user: root
+  vars_files:
+    - ./vars/users.yaml
+  tasks:
+    - name: Create Lightlytics Group
+      group:
+        name: lightlytics
+        state: present
+
+    - name: adding several users
+      user:
+        name: "{{ item.name }}"
+        state: present
+        comment: "{{ item.comment }}"
+        createhome: yes
+        group: "{{ item.group }}"
+      with_items: "{{ users }}"
+
+    - name: Allow 'lightlytics' group to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%lightlytics'
+        line: '%lightlytics ALL=(ALL) NOPASSWD: ALL'
+        validate: visudo -cf %s
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,11 @@
+---
+- name: Template mongod.conf.yaml
+  template:
+    src: ~/work/lightlytics-devops/ansible/roles/datadog_agent/templates/mongodConf.j2
+    dest: /etc/datadog-agent/conf.d/mongo.d/conf.yaml
+
+- name: Template datadog.yaml
+  template:
+    src: ~/work/lightlytics-devops/ansible/roles/datadog_agent/templates/datadogConf.j2
+    dest: /etc/datadog-agent/datadog.yaml
+

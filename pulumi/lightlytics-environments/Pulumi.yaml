@@ -1,0 +1,6 @@
+name: lightlytics-environments
+runtime:
+  name: python
+  options:
+    virtualenv: venv
+description: Lightlytics environment configurtion

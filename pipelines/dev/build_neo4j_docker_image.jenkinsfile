@@ -1,0 +1,36 @@
+pipeline {
+   agent {label 'master'}
+
+   stages {
+      stage('CheckOut From GitHub - lightlytics-devops ') {
+            steps {
+               checkout([$class: 'GitSCM', branches: [[name: 'master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '89019ef1-0bf8-44d4-806b-fe2fe2180348', url: 'https://github.com/lightlytics/lightlytics-devops.git']]])
+            }
+      }
+      stage('Copy latest jar file from s3') {
+            steps {
+               sh '''aws s3 cp s3://gds-lightlytics-jars/$(aws s3 ls s3://gds-lightlytics-jars  --recursive | sort | tail -n 1 | awk '{print $4}') ./Docker/neo4j/payload/'''
+            }
+      }
+      stage('Authenticate Docker client to registry') {
+            steps {
+               sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 219342927623.dkr.ecr.us-east-1.amazonaws.com"
+            }
+      }
+      stage(' docker file') {
+            steps {
+               sh "docker build -t gds ./Docker/neo4j/ "
+            }
+      }
+      stage('Tag docker image') {
+            steps {
+               sh "docker tag gds:latest 219342927623.dkr.ecr.us-east-1.amazonaws.com/lightlytics/neo4j:latest"
+            }
+      }
+      stage('Push image to newly created AWS repository') {
+            steps {
+               sh "docker push 219342927623.dkr.ecr.us-east-1.amazonaws.com/lightlytics/neo4j:latest"
+            }
+      }
+   }
+}

@@ -1,0 +1,19 @@
+- name: install Jenkins
+  hosts: jenkins-prod
+
+  tasks:
+  - name: Add Jenkins-CI Repository Key
+    apt_key:
+      url: "http://pkg.jenkins-ci.org/{{ ansible_os_family|lower }}/jenkins-ci.org.key"
+      state: present
+    become: yes
+    become_user: root
+
+
+  - name: Add Jenkins-CI Repository
+    apt_repository:
+      repo: 'deb http://pkg.jenkins-ci.org/{{ ansible_os_family|lower }} binary/'
+      state: present
+      update_cache: yes
+    become: yes
+    become_user: root

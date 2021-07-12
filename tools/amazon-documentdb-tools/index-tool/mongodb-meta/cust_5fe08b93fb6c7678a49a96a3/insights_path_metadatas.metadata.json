@@ -1,0 +1,22 @@
+{
+  "indexes": [
+    {
+      "v": 2,
+      "key": {
+        "_id": 1
+      },
+      "name": "_id_",
+      "ns": "cust_5fe08b93fb6c7678a49a96a3.insights_path_metadatas"
+    },
+    {
+      "v": 2,
+      "key": {
+        "path_id": 1,
+        "timestamp": 1
+      },
+      "name": "path_id_timestamp",
+      "ns": "cust_5fe08b93fb6c7678a49a96a3.insights_path_metadatas"
+    }
+  ],
+  "options": {}
+}

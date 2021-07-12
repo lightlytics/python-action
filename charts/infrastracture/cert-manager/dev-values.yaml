@@ -1,0 +1,10 @@
+# THIS IS CONFIGURED FOR FUTURE USE WITH ANOTHER INGRESS CONTROLLER, ALB INGRESS CONTROLLER DOESNT SUPPORT IT
+# CRDs allow users to create new types of resources without adding another API server. You do not need to understand API Aggregation to use CRDs.
+# https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/
+# https://cert-manager.io/docs/installation/kubernetes/
+installCRDs: true
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::219342927623:role/cert-manager-role
+securityContext:
+  enabled: true

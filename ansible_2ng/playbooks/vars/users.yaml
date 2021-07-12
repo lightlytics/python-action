@@ -1,0 +1,24 @@
+users:
+  - name: dan
+    comment: Dan Yazerski
+    group: lightlytics
+
+  - name: zeev
+    comment: Ze'ev Manilovich
+    group: lightlytics
+
+  - name: liran
+    comment: Liran Roffman
+    group: lightlytics
+
+  - name: ofri
+    comment: Ofri Sror
+    group: lightlytics
+
+  - name: mor
+    comment: Mor Adiv
+    group: lightlytics
+
+  - name: romi
+    comment: Romi Lisnovetzky
+    group: lightlytics

@@ -1,0 +1,22 @@
+init_config:
+instances:
+ - hosts:
+      - {{ host1 }}:{{ portHosts }}
+      - {{ host2 }}:{{ portHosts }}
+      - {{ host3 }}:{{ portHosts }}
+
+      username: {{ userName }}
+
+      password: {{ password }}
+
+    options: {
+      authSource: {{ authSource }}
+    }
+
+    replica_check: {{ replica_bool }}
+
+logs:
+  - type: file
+    path: {{ logPath }}
+    service: mongo
+    source: mongodb

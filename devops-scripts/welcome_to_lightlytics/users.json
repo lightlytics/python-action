@@ -1,0 +1,25 @@
+[{
+  "_id": {
+    "$oid": "5f68d177fd03048e663cd3da"
+  },
+  "default_customer_id": null,
+  "full_name": null,
+  "email": "admin@lightlytics.com",
+  "salt": {
+    "$binary": {
+      "base64": "YjIxMzE2YjZmNzA4Mjc1N2Y2NTZiYzM4NWJhYzEzNWFmN2Y5N2YwN2FmNDgxOWFjNWUzNTRmZDg2YTA0OWJmYw==",
+      "subType": "00"
+    }
+  },
+  "hashed_password": {
+    "$binary": {
+      "base64": "OTk3NDZiNjFlYmM3MmRhNjNjOTVmNzJj",
+      "subType": "00"
+    }
+  },
+  "password_expiration_date": {
+    "$date": "2020-12-14T16:14:47.165Z"
+  },
+  "change_password_next_login": false,
+  "admin_user": true
+}]

@@ -1,0 +1,23 @@
+{{- range $key, $item := .Values.lightlytics_ms }}
+{{ if eq (default $.Values.deployment.hpa_enable $item.deployment.hpa_enable) "yes" }}
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ $key }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ $key }}
+  minReplicas: {{ $.Values.autoscaling.minReplicas }}
+  maxReplicas: {{ $.Values.autoscaling.maxReplicas  }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ $.Values.autoscaling.metrics.resource.averageUtilization }}
+---
+{{- end}}
+{{- end}}

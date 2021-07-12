@@ -1,0 +1,10 @@
+awsRegion: us-east-1
+clusterName: gloat-eks_cluster
+awsVpcID: vpc-041f00e3a100b7f30
+rbac:
+  create: true
+  serviceAccount:
+    create: true
+    name: alb-ingress-controller-sa
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::624907860825:role/gloat-alb_ingress_controller_role
