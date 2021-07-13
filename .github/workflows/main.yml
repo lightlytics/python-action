@@ -26,11 +26,8 @@ jobs:
 #  build:
 #    runs-on: ubuntu-latest
 #    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Hello world action step
-        uses: lightlytics/python-action@v7 # Uses an action in the root directory
-        with:
+       - uses: lightlytics/python-action@v8 # Uses an action in the root directory
+         with:
 #          path: build
-          Path_plan: ./plan.json
-          Path_metadata: ./metadata.json
+           Path_plan: ./plan.json
+           Path_metadata: ./metadata.json
