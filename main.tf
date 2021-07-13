@@ -9,7 +9,7 @@ resource "aws_network_interface" "test_interface_1" {
 }
 resource "aws_instance" "test-instance_pub" {
     ami = "ami-00ddb0e5626798373"
-	instance_type = "t2.large"
+	instance_type = "t2.micro"
 	network_interface {
       network_interface_id = aws_network_interface.test_interface_1.id
       device_index         = 0
