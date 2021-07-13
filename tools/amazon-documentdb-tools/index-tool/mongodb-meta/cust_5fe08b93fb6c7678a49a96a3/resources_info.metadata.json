@@ -1,1 +1,0 @@
-{"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"cust_5fe08b93fb6c7678a49a96a3.resources_info"},{"v":2,"key":{"resource_id":1},"name":"resourceid","ns":"cust_5fe08b93fb6c7678a49a96a3.resources_info"},{"v":2,"key":{"resource_type":1},"name":"resourcetype","ns":"cust_5fe08b93fb6c7678a49a96a3.resources_info"}],"options":{}}

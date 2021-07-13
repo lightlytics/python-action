@@ -1,7 +1,0 @@
----
-- name: deploy datadog agent file configuration
-  include_tasks: file_conf.yml
-- name: changing permissions to log file of mongod
-  include_tasks: changing_permissions.yml
-- name: restart datadog service
-  include_tasks: restartService.yml

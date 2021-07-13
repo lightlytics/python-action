@@ -1,9 +1,0 @@
-dependencies:
-- name: mongodb
-  repository: file://../dependency_charts/mongodb
-  version: 7.8.10
-- name: neo4j
-  repository: file://../dependency_charts/neo4j
-  version: 4.1.1-4
-digest: sha256:d2253bdbde9469caf4a49286861ce9c3245998d2ad3a1f4687fbc336748ea678
-generated: "2020-10-19T10:05:46.3082094+03:00"

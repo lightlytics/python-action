@@ -1,4 +1,0 @@
-name: lightlytics-domains
-runtime:
-  name: python
-description: Lightlytics Route53 domains

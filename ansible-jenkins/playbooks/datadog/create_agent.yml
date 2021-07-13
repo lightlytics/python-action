@@ -1,8 +1,0 @@
----
-- hosts: mongodb[1:2]
-  roles:
-    - roles/datadog.datadog
-  become: yes
-  vars:
-    datadog_api_key: "d66c72c00c531fd52c1ebbdd7d9b9ed0"
-    datadog_site: "datadoghq.com"

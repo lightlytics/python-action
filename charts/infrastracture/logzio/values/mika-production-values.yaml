@@ -1,4 +1,0 @@
-configType: autodiscover
-secrets:
-  logzioShippingToken: qOlTYEiRAyCVLwJRcyDLJbsypsTvUCpS
-  clusterName: mika-eks_cluster
