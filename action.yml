@@ -1,16 +1,22 @@
-# action.yml
 name: 'Hello World'
 description: 'Greet someone and record the time'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  Path_plan:  # id of input
+    description: 'path to tr plan file'
     required: true
-    default: 'World'
+    default: './plan.json'
+  Path_metadata:
+    description: 'path to metadata file'
+    required: true
+    default: './metadata.json'
 outputs:
-  time: # id of output
+  Path_plan: # id of output
+    description: 'The time we greeted you'
+  Path_metadata: # id of output
     description: 'The time we greeted you'
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.who-to-greet }}
+    - ${{ inputs.Path_plan }}
+    - ${{ inputs.Path_metadata }}

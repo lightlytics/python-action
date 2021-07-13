@@ -1,15 +1,36 @@
-on: [push]
 
+name: terraform-plan
+on:
+  pull_request:
 jobs:
-  hello_world_job:
+  terraform-plan:
     runs-on: ubuntu-latest
-    name: A job to say hello
     steps:
-      - name: Hello world action step
-        id: hello
-        uses: lightlytics/python-action@v5
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
         with:
-          who-to-greet: 'Mona the Octocat'
-      # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+          terraform_wrapper: false
+      - run: terraform  init
+      - run: terraform  plan -lock=false -out ./terraform.plan
+      - run: terraform  show -json ./terraform.plan > ./plan.json
+      - run: cat ./plan.json
+      - uses: jsdaniell/create-json@1.1.2
+        with:
+          name: metadata.json
+          json: '{ "source": { "name":"Github", "event name": "${{ github.event_name }}","repository": "${{ github.repository }}", "base_branch": "${{ github.base_ref }}","branch": "${{ github.head_ref }}","pr_id": ${{ github.event.pull_request.number }}, "commit_hash":"${{ github.sha }}", "user_name": "${{ github.actor }}" } }'
+          dir: './'
+      - run: ls -la ./
+      - run: cat ./metadata.json
+#      - run: pip3 install typer
+#      - run:  python3 ./terraform/jsonapi.py --path-plan './terraform/plan.json'  --path-metadata './terraform/metadata.json'
+#  build:
+#    runs-on: ubuntu-latest
+#    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Hello world action step
+        uses: ./terraform # Uses an action in the root directory
+        with:
+#          path: build
+          Path_plan: ./plan.json
+          Path_metadata: ./metadata.json
