@@ -4,7 +4,6 @@ COPY . /app
 COPY metadata.json /app/metadata.json
 COPY plan.json /app/plan.json
 
-WORKDIR /app
-RUN pip3 install -r requirements.txt
-ENV PYTHONPATH /app
+RUN pip3 install -r /app/requirements.txt
+
 CMD ["python /app/jsonapi.py"]
