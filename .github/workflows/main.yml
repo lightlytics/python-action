@@ -6,7 +6,7 @@ jobs:
   terraform-plan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: lightlytics/python-action@v9
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
@@ -21,7 +21,7 @@ jobs:
           dir: './'
       - run: ls -la ./
       - run: cat ./metadata.json
-      - run: docker build -t lightlytics/python-action:v9.8
+      - run: docker build -t lightlytics/python-action:v1.1
 #      - run: pip3 install typer
 #      - run:  python3 ./terraform/jsonapi.py --path-plan './terraform/plan.json'  --path-metadata './terraform/metadata.json'
 #  build:
